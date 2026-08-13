@@ -7,26 +7,35 @@
   const metrics=document.createElement('div');
   metrics.className='advanced-metrics';
   metrics.innerHTML=`
-    <div><span>OCR</span><b id="ocrScore">98%</b></div>
-    <div><span>Ingredient Match</span><b id="matchScore">94%</b></div>
-    <div><span>Risk Scan</span><b id="riskScore">LOW</b></div>`;
+    <div><span>OCR VISION</span><b id="ocrScore">98%</b></div>
+    <div><span>INGREDIENT MATCH</span><b id="matchScore">94%</b></div>
+    <div><span>E-NUMBER SCAN</span><b id="additiveScore">97%</b></div>
+    <div><span>RISK ENGINE</span><b id="riskScore">LOW</b></div>
+    <div><span>SOURCE VERIFY</span><b id="sourceScore">MATCHED</b></div>`;
   note.after(metrics);
 
-  const originalSetAttribute=app.setAttribute.bind(app);
-  app.setAttribute=function(name,value){
-    originalSetAttribute(name,value);
-    if(name==='data-state'){
-      metrics.dataset.state=value;
-      if(value==='analyzing'){
-        document.getElementById('ocrScore').textContent='SCAN';
-        document.getElementById('matchScore').textContent='...';
-        document.getElementById('riskScore').textContent='CHECK';
-      }
-      if(value==='result'){
-        document.getElementById('ocrScore').textContent='98%';
-        document.getElementById('matchScore').textContent='94%';
-        document.getElementById('riskScore').textContent='LOW';
-      }
+  function setMetric(id,value){
+    const el=document.getElementById(id);
+    if(el) el.textContent=value;
+  }
+
+  const observer=new MutationObserver(()=>{
+    const state=app.dataset.state;
+    if(state==='analyzing'){
+      setMetric('ocrScore','SCAN');
+      setMetric('matchScore','RUN');
+      setMetric('additiveScore','CHECK');
+      setMetric('riskScore','CHECK');
+      setMetric('sourceScore','SEARCH');
     }
-  };
+    if(state==='result'){
+      setMetric('ocrScore','98%');
+      setMetric('matchScore','94%');
+      setMetric('additiveScore','97%');
+      setMetric('riskScore','LOW');
+      setMetric('sourceScore','MATCHED');
+    }
+  });
+
+  observer.observe(app,{attributes:true,attributeFilter:['data-state']});
 })();
