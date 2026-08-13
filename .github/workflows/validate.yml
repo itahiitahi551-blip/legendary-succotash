@@ -1,0 +1,42 @@
+name: Validate HalalLens
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate JavaScript syntax
+        run: node --check app.js
+
+      - name: Validate HTML/JS hooks and stylesheet links
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path('index.html').read_text(encoding='utf-8')
+          js = Path('app.js').read_text(encoding='utf-8')
+
+          ids = set(re.findall(r"\$\('([^']+)'\)", js))
+          missing = [i for i in sorted(ids) if not re.search(rf'id=[\"\']{re.escape(i)}[\"\']', html)]
+          if missing:
+              raise SystemExit('Missing DOM hooks: ' + ', '.join(missing))
+
+          styles = re.findall(r'<link[^>]+href=[\"\']([^\"\']+\.css)[\"\']', html)
+          missing_styles = [s for s in styles if not Path(s).exists()]
+          if missing_styles:
+              raise SystemExit('Missing stylesheet files: ' + ', '.join(missing_styles))
+
+          if '<script src="app.js"></script>' not in html:
+              raise SystemExit('app.js script tag is missing')
+
+          print('HalalLens validation passed.')
+          PY
