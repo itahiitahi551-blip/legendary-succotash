@@ -11,31 +11,31 @@
     <div><span>INGREDIENT MATCH</span><b id="matchScore">94%</b></div>
     <div><span>E-NUMBER SCAN</span><b id="additiveScore">97%</b></div>
     <div><span>RISK ENGINE</span><b id="riskScore">LOW</b></div>
-    <div><span>SOURCE VERIFY</span><b id="sourceScore">MATCHED</b></div>`;
+    <div><span>SOURCE VERIFY</span><b id="sourceScore">MATCHED</b></div>
+    <div><span>AI EXPLANATION</span><b id="explanationScore">READY</b></div>`;
   note.after(metrics);
 
-  function setMetric(id,value){
-    const el=document.getElementById(id);
-    if(el) el.textContent=value;
-  }
+  const setMetric=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value};
+
+  window.HalalLensAnalysis={
+    update(data={}){
+      if(data.ocr)setMetric('ocrScore',data.ocr);
+      if(data.match)setMetric('matchScore',data.match);
+      if(data.additives)setMetric('additiveScore',data.additives);
+      if(data.risk)setMetric('riskScore',data.risk);
+      if(data.source)setMetric('sourceScore',data.source);
+      if(data.explanation)setMetric('explanationScore',data.explanation);
+    }
+  };
 
   const observer=new MutationObserver(()=>{
     const state=app.dataset.state;
     if(state==='analyzing'){
-      setMetric('ocrScore','SCAN');
-      setMetric('matchScore','RUN');
-      setMetric('additiveScore','CHECK');
-      setMetric('riskScore','CHECK');
-      setMetric('sourceScore','SEARCH');
+      window.HalalLensAnalysis.update({ocr:'SCAN',match:'RUN',additives:'CHECK',risk:'CHECK',source:'SEARCH',explanation:'PROCESS'});
     }
     if(state==='result'){
-      setMetric('ocrScore','98%');
-      setMetric('matchScore','94%');
-      setMetric('additiveScore','97%');
-      setMetric('riskScore','LOW');
-      setMetric('sourceScore','MATCHED');
+      window.HalalLensAnalysis.update({ocr:'98%',match:'94%',additives:'97%',risk:'LOW',source:'MATCHED',explanation:'READY'});
     }
   });
-
   observer.observe(app,{attributes:true,attributeFilter:['data-state']});
 })();
