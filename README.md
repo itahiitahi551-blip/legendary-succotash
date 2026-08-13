@@ -1,24 +1,20 @@
-# Interactive Product Teardown & Analysis Hub
+# HalalLens
 
-A dark futuristic interactive product reverse-engineering dashboard built with vanilla HTML, CSS and JavaScript.
+واجهة مستقبلية لتحليل المنتجات الغذائية بالصور، مستوحاة من تجربة مختبر بصري زجاجي.
 
 ## Features
 
-- Interactive exploded layer view rendered with Canvas
-- Explode-depth slider
-- Drag-to-rotate inspection view
-- Component inspection cards
-- Estimated BOM and repairability dashboard
-- Workload and thermal simulation
-- Responsive desktop/mobile layout
-- Zero external runtime dependencies
+- رفع صور JPG / PNG / WEBP
+- سحب وإفلات للصورة
+- معاينة المنتج داخل مساحة التحليل
+- واجهة Glassmorphism داكنة مع Neon Cyan
+- نتيجة حلال / يحتاج تحقق / غير حلال
+- Confidence Ring لدرجة الثقة
+- قائمة مكونات مصنفة حسب مستوى الحساسية
+- تجربة Demo تفاعلية بدون API
+- Responsive على الهاتف والكمبيوتر
+- يعمل مباشرة بفتح `index.html`
 
-## Run
+## ملاحظة
 
-Open `index.html` in a browser. No build step is required.
-
-## Project structure
-
-- `index.html` — application structure
-- `styles.css` — futuristic responsive UI
-- `app.js` — canvas teardown model and interactions
+النسخة الحالية هي Prototype للواجهة والتفاعل. التحليل الحقيقي يحتاج OCR وقاعدة بيانات موثوقة للمكونات ومصادرها وربط Backend / AI.
