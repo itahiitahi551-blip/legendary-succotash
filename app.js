@@ -4,6 +4,7 @@ const preview=$('previewImage'),dropZone=$('dropZone'),emptyState=$('emptyState'
 const ingredients=$('ingredients'),count=$('ingredientCount'),verdictCard=$('verdictCard'),confidenceRing=$('confidenceRing'),toast=$('toast');
 const verdictKicker=$('verdictKicker'),verdictTitle=$('verdictTitle'),verdictText=$('verdictText'),verdictIcon=$('verdictIcon');
 const confidenceValue=$('confidenceValue'),confidenceTitle=$('confidenceTitle'),confidenceText=$('confidenceText'),analysisNote=$('analysisNote');
+const historyDialog=$('historyDialog'),historyBody=$('historyBody'),historyClose=$('historyClose'),clearHistoryBtn=$('clearHistoryBtn');
 const state={status:'idle',file:null,objectUrl:null,demo:false,timer:null};
 
 const demoData=[
@@ -21,52 +22,40 @@ function clearPreview(){if(state.objectUrl){URL.revokeObjectURL(state.objectUrl)
 function validateFile(file){if(!file)return 'لم يتم اختيار صورة';if(!file.type.startsWith('image/'))return 'الملف المختار ليس صورة';if(file.size>10*1024*1024)return 'حجم الصورة يتجاوز 10MB';return ''}
 function loadImage(file){const error=validateFile(file);if(error){showToast(error);return}if(state.objectUrl)URL.revokeObjectURL(state.objectUrl);state.file=file;state.demo=false;state.objectUrl=URL.createObjectURL(file);setPreview(state.objectUrl);setStatus('ready');showToast('تم تجهيز الصورة للتحليل')}
 function setVerdict(type,kicker,title,text,confidence){
-  verdictCard.className=`verdict-card ${type}`;
-  verdictKicker.textContent=kicker;verdictTitle.textContent=title;verdictText.textContent=text;
-  verdictIcon.textContent=type==='safe'?'✓':type==='bad'?'×':type==='warn'?'!':'◌';
-  const deg=Math.round(confidence*360),accent=type==='safe'?'var(--green)':type==='bad'?'var(--red)':'var(--cyan)';
-  confidenceRing.style.background=`conic-gradient(${accent} ${deg}deg,rgba(100,231,238,.12) ${deg}deg)`;
-  confidenceValue.textContent=confidence.toFixed(2);
-  confidenceTitle.textContent=confidence>.9?'ثقة مرتفعة':confidence>.75?'ثقة جيدة':'ثقة منخفضة';
-  confidenceText.textContent='درجة الثقة تقديرية في هذا النموذج التجريبي وليست حكمًا شرعيًا.';
+  verdictCard.className=`verdict-card ${type}`;verdictKicker.textContent=kicker;verdictTitle.textContent=title;verdictText.textContent=text;verdictIcon.textContent=type==='safe'?'✓':type==='bad'?'×':type==='warn'?'!':'◌';
+  const deg=Math.round(confidence*360),accent=type==='safe'?'var(--green)':type==='bad'?'var(--red)':'var(--cyan)';confidenceRing.style.background=`conic-gradient(${accent} ${deg}deg,rgba(100,231,238,.12) ${deg}deg)`;
+  confidenceValue.textContent=confidence.toFixed(2);confidenceTitle.textContent=confidence>.9?'ثقة مرتفعة':confidence>.75?'ثقة جيدة':'ثقة منخفضة';confidenceText.textContent='درجة الثقة تقديرية في هذا النموذج التجريبي وليست حكمًا شرعيًا.';
 }
 function escapeHtml(value){return String(value).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]))}
-function renderIngredients(data){ingredients.innerHTML=data.map(x=>`<div class="ingredient ${x.status}"><i></i><b>${escapeHtml(x.name)}</b><span>${escapeHtml(x.label)}</span></div>`).join('');count.textContent=data.length}
+function renderIngredients(data){ingredients.innerHTML=data.length?data.map(x=>`<div class="ingredient ${x.status}"><i></i><b>${escapeHtml(x.name)}</b><span>${escapeHtml(x.label)}</span></div>`).join(''):'<div class="empty-item">لا توجد بيانات بعد</div>';count.textContent=data.length}
 function saveHistory(result){try{const items=JSON.parse(localStorage.getItem('halallens-history')||'[]');items.unshift({...result,at:new Date().toISOString()});localStorage.setItem('halallens-history',JSON.stringify(items.slice(0,8)))}catch(_){}}
 function getHistory(){try{return JSON.parse(localStorage.getItem('halallens-history')||'[]')}catch(_){return []}}
-function showHistory(){const items=getHistory();if(!items.length){showToast('لا توجد تحليلات محفوظة بعد');return}const latest=items[0];showToast(`${items.length} تحليلات محفوظة · آخر نتيجة: ${latest.title}`)}
+function formatDate(value){try{return new Intl.DateTimeFormat('ar-DZ',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value))}catch(_){return value}}
+function renderHistory(){const items=getHistory();if(!items.length){historyBody.innerHTML='<div class="history-empty">لا توجد تحليلات محفوظة بعد.<br>أجرِ أول تحليل ليظهر هنا.</div>';return}historyBody.innerHTML=items.map(item=>`<div class="history-item"><div><b>${escapeHtml(item.title)}</b><small>${escapeHtml(formatDate(item.at))}</small></div><strong>${Number(item.confidence||0).toFixed(2)}</strong><span>${item.count||0} عناصر</span></div>`).join('')}
+function showHistory(){renderHistory();if(typeof historyDialog.showModal==='function')historyDialog.showModal();else showToast('السجل غير مدعوم في هذا المتصفح')}
 function finishAnalysis(){
-  renderIngredients(demoData);
-  setVerdict('warn','نتيجة أولية','يحتاج تحقق','تم العثور على مكوّن عالي الحساسية (E120). لا تعتمد النتيجة النهائية قبل التحقق من مصدره.',.95);
+  renderIngredients(demoData);setVerdict('warn','نتيجة أولية','يحتاج تحقق','تم العثور على مكوّن عالي الحساسية (E120). لا تعتمد النتيجة النهائية قبل التحقق من مصدره.',.95);
   analysisNote.innerHTML='<b>تنبيه:</b> هذه واجهة محاكاة. لا يتم استنتاج الحلال/الحرام بشكل موثوق من دون OCR وقاعدة مكونات ومصادر معتمدة ومراجعة منهجية.';
-  saveHistory({title:'يحتاج تحقق',confidence:.95,count:demoData.length});
-  setStatus('result');showToast('اكتمل التحليل التجريبي');
+  saveHistory({title:'يحتاج تحقق',confidence:.95,count:demoData.length});setStatus('result');showToast('اكتمل التحليل التجريبي');
 }
-function runAnalysis(){
-  if(state.status==='analyzing')return;
-  if(!(state.status==='ready'||state.status==='result')){showToast('ارفع صورة أولًا');return}
-  setStatus('analyzing');
-  clearTimeout(state.timer);
-  state.timer=setTimeout(finishAnalysis,1200);
-}
+function runAnalysis(){if(state.status==='analyzing')return;if(!(state.status==='ready'||state.status==='result')){showToast('ارفع صورة أولًا');return}setStatus('analyzing');clearTimeout(state.timer);state.timer=setTimeout(finishAnalysis,1200)}
 function makeDemoSvg(){return `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#eff7b5"/><stop offset="1" stop-color="#cde772"/></linearGradient></defs><rect width="100%" height="100%" fill="#10282b"/><rect x="250" y="55" width="400" height="590" rx="28" fill="url(#g)"/><text x="450" y="175" text-anchor="middle" font-family="Arial" font-size="64" font-weight="700" fill="#173a32">Choco</text><text x="450" y="245" text-anchor="middle" font-family="Arial" font-size="42" fill="#173a32">Crunch</text><circle cx="450" cy="390" r="92" fill="#895630"/><circle cx="414" cy="365" r="11" fill="#ead08e"/><circle cx="470" cy="410" r="13" fill="#ead08e"/><text x="450" y="558" text-anchor="middle" font-family="Arial" font-size="19" fill="#173a32">E120 • SUGAR • OIL</text></svg>`}
-function demo(){
-  clearTimeout(state.timer);state.demo=true;state.file=null;
-  if(state.objectUrl){URL.revokeObjectURL(state.objectUrl);state.objectUrl=null}
-  const src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(makeDemoSvg());
-  setPreview(src);setStatus('ready');showToast('تم تحميل منتج تجريبي');runAnalysis();
-}
+function demo(){clearTimeout(state.timer);state.demo=true;state.file=null;if(state.objectUrl){URL.revokeObjectURL(state.objectUrl);state.objectUrl=null}const src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(makeDemoSvg());setPreview(src);setStatus('ready');showToast('تم تحميل منتج تجريبي');runAnalysis()}
 
 uploadBtn.addEventListener('click',()=>fileInput.click());
 fileInput.addEventListener('change',e=>loadImage(e.target.files?.[0]));
-analyzeBtn.addEventListener('click',runAnalysis);
-demoBtn.addEventListener('click',demo);
+analyzeBtn.addEventListener('click',runAnalysis);demoBtn.addEventListener('click',demo);
 removeBtn.addEventListener('click',()=>{clearTimeout(state.timer);clearPreview();renderIngredients([]);setVerdict('pending','بانتظار الصورة','جاهز للتحليل','ارفع منتجًا للحصول على تقرير المكونات.',0);analysisNote.innerHTML='<b>ملاحظة:</b> ستظهر تفاصيل التحليل بعد رفع صورة وتشغيل الفحص.';showToast('تمت إزالة الصورة')});
 $('helpBtn').addEventListener('click',()=>showToast('ارفع صورة واضحة للمكونات ثم اضغط ابدأ التحليل'));
 $('historyBtn').addEventListener('click',showHistory);
+historyClose.addEventListener('click',()=>historyDialog.close());
+clearHistoryBtn.addEventListener('click',()=>{localStorage.removeItem('halallens-history');renderHistory();showToast('تم مسح السجل المحلي')});
+historyDialog.addEventListener('click',e=>{if(e.target===historyDialog)historyDialog.close()});
 
 dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragging')});
 dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragging'));
 dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('dragging');loadImage(e.dataTransfer.files?.[0])});
+document.addEventListener('paste',e=>{const file=[...(e.clipboardData?.items||[])].map(x=>x.getAsFile?.()).find(Boolean);if(file){loadImage(file);showToast('تم لصق الصورة من الحافظة')}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&historyDialog?.open)historyDialog.close();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='o'){e.preventDefault();fileInput.click()}});
 window.addEventListener('beforeunload',()=>{if(state.objectUrl)URL.revokeObjectURL(state.objectUrl)});
 setStatus('idle');
