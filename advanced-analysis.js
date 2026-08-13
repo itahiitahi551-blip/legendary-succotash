@@ -25,17 +25,19 @@
       if(data.risk)setMetric('riskScore',data.risk);
       if(data.source)setMetric('sourceScore',data.source);
       if(data.explanation)setMetric('explanationScore',data.explanation);
+    },
+    scanning(){
+      this.update({ocr:'SCAN',match:'RUN',additives:'CHECK',risk:'CHECK',source:'SEARCH',explanation:'PROCESS'});
+    },
+    complete(){
+      this.update({ocr:'98%',match:'94%',additives:'97%',risk:'LOW',source:'MATCHED',explanation:'READY'});
     }
   };
 
   const observer=new MutationObserver(()=>{
     const state=app.dataset.state;
-    if(state==='analyzing'){
-      window.HalalLensAnalysis.update({ocr:'SCAN',match:'RUN',additives:'CHECK',risk:'CHECK',source:'SEARCH',explanation:'PROCESS'});
-    }
-    if(state==='result'){
-      window.HalalLensAnalysis.update({ocr:'98%',match:'94%',additives:'97%',risk:'LOW',source:'MATCHED',explanation:'READY'});
-    }
+    if(state==='analyzing') window.HalalLensAnalysis.scanning();
+    if(state==='result') window.HalalLensAnalysis.complete();
   });
   observer.observe(app,{attributes:true,attributeFilter:['data-state']});
 })();
