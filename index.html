@@ -1,94 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interactive Product Teardown & Analysis Hub</title>
+  <meta name="theme-color" content="#06151a" />
+  <title>HalalLens — تحليل المنتجات الذكي</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div>
-        <div class="eyebrow">ENGINEERING REVERSE LAB</div>
-        <h1>Interactive Product Teardown</h1>
-      </div>
-      <div class="topbar-status"><span class="status-dot"></span> LIVE ANALYSIS</div>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div><div class="grid-noise"></div>
+  <main class="page">
+    <header class="nav glass">
+      <a class="brand" href="#"><span class="brand-mark"><span></span><span></span><span></span></span><span><b>Halal</b><em>Lens</em><small>AI FOOD ANALYSIS</small></span></a>
+      <div class="nav-actions"><button class="nav-btn" id="historyBtn">السجل</button><button class="nav-btn" id="helpBtn">كيف يعمل؟</button><button class="status-pill"><i></i> النظام يعمل</button></div>
     </header>
 
-    <main class="workspace">
-      <section class="hero-card panel-grid">
-        <div class="product-meta">
-          <div class="tag">SMARTPHONE / FLAGSHIP</div>
-          <h2>Astra X1</h2>
-          <p>Layered teardown, component intelligence and thermal behavior in one interactive workspace.</p>
-          <div class="meta-row">
-            <span>12 modules</span><span>84 tracked parts</span><span>2026 reference build</span>
-          </div>
-        </div>
-        <div class="hero-metrics">
-          <div><small>BOM COST</small><strong id="bomCost">$412</strong></div>
-          <div><small>REPAIRABILITY</small><strong id="repairability">7.4/10</strong></div>
-          <div><small>BUILD QUALITY</small><strong>91%</strong></div>
-        </div>
-      </section>
+    <section class="hero">
+      <div class="hero-copy"><span class="eyebrow">INTELLIGENT INGREDIENT ANALYSIS</span><h1>اعرف ماذا يوجد<br><strong>داخل منتجك.</strong></h1><p>ارفع صورة واضحة لقائمة المكونات، ودع HalalLens يحوّلها إلى تحليل بصري سريع ومفهوم.</p><div class="hero-features"><span>تحليل المكونات</span><span>كشف الإضافات</span><span>درجة ثقة</span></div></div>
+      <div class="hero-orb" aria-hidden="true"><div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="orb-eye"><span class="eye-shine"></span></div><div class="orb-pulse"></div></div>
+    </section>
 
-      <section class="main-grid">
-        <div class="panel viewer-panel">
-          <div class="panel-head">
-            <div><span class="section-kicker">01 / EXPLODED VIEW</span><h3>Layer Stack Inspection</h3></div>
-            <div class="toolbar">
-              <button id="resetBtn" class="ghost-btn">RESET</button>
-              <button id="thermalBtn" class="ghost-btn active">THERMAL</button>
-            </div>
-          </div>
-          <div class="viewer-wrap">
-            <canvas id="teardownCanvas" aria-label="Interactive product teardown view"></canvas>
-            <div class="viewer-hud">
-              <div><span>X</span><b id="angleValue">018°</b></div>
-              <div><span>Y</span><b>042°</b></div>
-              <div><span>Z</span><b id="explodeValue">64%</b></div>
-            </div>
-            <div class="component-labels" id="componentLabels"></div>
-          </div>
-          <div class="control-bar">
-            <div class="control-title"><span>EXPLODE DEPTH</span><strong id="explodeLabel">64%</strong></div>
-            <input id="explodeSlider" type="range" min="0" max="100" value="64" />
-            <div class="control-hint">Drag slider to separate structural layers</div>
-          </div>
+    <section class="workspace">
+      <div class="scanner glass">
+        <div class="scanner-top"><div><span class="eyebrow">01 / SCAN</span><h2>حلّل منتجًا</h2></div><span class="live-chip"><i></i> READY</span></div>
+        <div class="scan-stage" id="dropZone">
+          <input id="fileInput" type="file" accept="image/*" hidden />
+          <div class="scan-grid"></div><div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
+          <div class="scan-empty" id="emptyState"><div class="upload-icon"><span></span><b>+</b></div><h3>ارفع صورة المنتج</h3><p>التقط صورة واضحة للمكونات أو اسحبها هنا</p><div class="upload-actions"><button class="primary" id="uploadBtn">اختيار صورة</button><button class="secondary" id="demoBtn">تجربة تجريبية</button></div><small>PNG / JPG / WEBP · حتى 10MB</small></div>
+          <img id="previewImage" class="preview" alt="معاينة المنتج" />
+          <div class="scan-overlay" id="scanOverlay"><div class="scan-line"></div><div class="scan-caption">جارٍ تحليل النص والصورة...</div></div><button class="remove-preview" id="removeBtn">×</button>
         </div>
+        <div class="scanner-footer"><span><i class="shield"></i> لا يتم حفظ الصورة محليًا</span><button class="analyze-btn" id="analyzeBtn" disabled>ابدأ التحليل <span>↗</span></button></div>
+      </div>
 
-        <aside class="panel inspect-panel">
-          <div class="panel-head"><div><span class="section-kicker">02 / COMPONENT INTELLIGENCE</span><h3 id="componentTitle">Application Processor</h3></div><span class="tiny-tag" id="componentTag">ACTIVE</span></div>
-          <div class="component-hero"><div class="chip-icon">IC</div><div><div id="componentSubtitle">8-core mobile SoC</div><strong id="componentVendor">Astra Semiconductor</strong></div></div>
-          <div class="detail-grid">
-            <div><small>EST. COST</small><strong id="componentCost">$59</strong></div>
-            <div><small>MATERIAL</small><strong id="componentMaterial">Silicon / copper</strong></div>
-            <div><small>PERFORMANCE</small><strong id="componentPerformance">9.6 / 10</strong></div>
-            <div><small>THERMAL RISK</small><strong id="componentThermal">High</strong></div>
-          </div>
-          <div class="mini-chart"><div class="chart-caption"><span>LOAD BEHAVIOR</span><span id="loadValue">72%</span></div><div class="bars" id="loadBars"></div></div>
-          <div class="notes" id="componentNotes">Dense package design prioritizes compute density. Copper heat spreader sits directly above the package to move transient heat toward the vapor chamber.</div>
-        </aside>
-      </section>
+      <aside class="results glass" id="resultsPanel">
+        <div class="results-head"><div><span class="eyebrow">02 / AI RESULT</span><h2>نتيجة التحليل</h2></div><span class="result-id">HL-2048</span></div>
+        <div class="verdict-card pending" id="verdictCard"><div class="verdict-icon" id="verdictIcon">◌</div><div><small id="verdictKicker">بانتظار الصورة</small><h3 id="verdictTitle">جاهز للتحليل</h3><p id="verdictText">ارفع منتجًا للحصول على تقرير المكونات.</p></div></div>
+        <div class="confidence"><div class="confidence-ring" id="confidenceRing"><div><strong id="confidenceValue">0.00</strong><small>ثقة التحليل</small></div></div><div><span class="eyebrow">CONFIDENCE ENGINE</span><h3 id="confidenceTitle">لم يبدأ التحليل</h3><p id="confidenceText">ستظهر درجة الثقة بعد تحليل الصورة.</p></div></div>
+        <div class="ingredient-list"><div class="list-title"><span>العناصر المكتشفة</span><span id="ingredientCount">0</span></div><div id="ingredients"><div class="empty-item">لا توجد بيانات بعد</div></div></div>
+        <div class="analysis-note" id="analysisNote"><b>ملاحظة:</b> التحليل المعروض تجريبي ولا يغني عن الرجوع إلى الجهة الموثوقة عند الشك في مكوّن.</div>
+      </aside>
+    </section>
 
-      <section class="dashboard-grid">
-        <div class="panel bom-panel">
-          <div class="panel-head"><div><span class="section-kicker">03 / PRODUCT HEALTH</span><h3>Manufacturing & BOM Dashboard</h3></div><span class="tiny-tag">ESTIMATED</span></div>
-          <div class="health-grid">
-            <div class="health-card"><span>BOM COST</span><strong>$412</strong><div class="progress"><i style="width:68%"></i></div><small>vs $608 retail component value</small></div>
-            <div class="health-card"><span>REPAIRABILITY</span><strong>7.4</strong><div class="progress"><i style="width:74%"></i></div><small>Modular fasteners & pull tabs</small></div>
-            <div class="health-card"><span>QUALITY INDEX</span><strong>91%</strong><div class="progress"><i style="width:91%"></i></div><small>Low tolerance variance</small></div>
-            <div class="health-card"><span>THERMAL HEADROOM</span><strong id="headroomValue">28%</strong><div class="progress"><i id="headroomBar" style="width:28%"></i></div><small>At current simulated workload</small></div>
-          </div>
-        </div>
-        <div class="panel simulation-panel">
-          <div class="panel-head"><div><span class="section-kicker">04 / WORKLOAD SIMULATION</span><h3>Stress & Thermal Map</h3></div><span id="simulationState" class="tiny-tag">BALANCED</span></div>
-          <div class="dial-row"><div class="dial"><div class="dial-core" id="dialCore">58</div><small>% LOAD</small></div><div class="sim-copy"><strong id="simTemp">42°C</strong><span>estimated package temperature</span><input id="loadSlider" type="range" min="0" max="100" value="58" /><div class="range-labels"><span>IDLE</span><span>PEAK</span></div></div></div>
-        </div>
-      </section>
-    </main>
-  </div>
-  <script src="app.js"></script>
+    <section class="bottom-grid"><div class="mini-panel glass"><span class="eyebrow">HEURISTIC ENGINE</span><h3>كيف نصل إلى النتيجة؟</h3><div class="steps"><span><b>01</b> OCR</span><span><b>02</b> Ingredient map</span><span><b>03</b> Risk scoring</span><span><b>04</b> Verdict</span></div></div><div class="mini-panel glass tips"><span class="eyebrow">BEST PRACTICE</span><h3>صورة أوضح = تحليل أدق</h3><p>اجعل النص ظاهرًا بالكامل، وتجنب الانعكاس والضبابية والقص.</p></div></section>
+    <footer>HalalLens © 2026 · Intelligent Food Analysis Interface</footer>
+  </main><div class="toast" id="toast"></div><script src="app.js"></script>
 </body>
 </html>
