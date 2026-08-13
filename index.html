@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#06151a" />
+  <meta name="description" content="HalalLens — واجهة ذكية لتحليل مكونات المنتجات بصريًا." />
   <title>HalalLens — تحليل المنتجات الذكي</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -11,39 +12,32 @@
   <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div><div class="grid-noise"></div>
   <main class="page">
     <header class="nav glass">
-      <a class="brand" href="#"><span class="brand-mark"><span></span><span></span><span></span></span><span><b>Halal</b><em>Lens</em><small>AI FOOD ANALYSIS</small></span></a>
-      <div class="nav-actions"><button class="nav-btn" id="historyBtn">السجل</button><button class="nav-btn" id="helpBtn">كيف يعمل؟</button><button class="status-pill"><i></i> النظام يعمل</button></div>
+      <a class="brand" href="#" aria-label="HalalLens"><span class="brand-mark"><span></span><span></span><span></span></span><span><b>Halal</b><em>Lens</em><small>AI FOOD ANALYSIS</small></span></a>
+      <div class="nav-actions"><button class="nav-btn" id="historyBtn" type="button">السجل</button><button class="nav-btn" id="helpBtn" type="button">كيف يعمل؟</button><span class="status-pill"><i></i> النظام يعمل</span></div>
     </header>
-
-    <section class="hero">
-      <div class="hero-copy"><span class="eyebrow">INTELLIGENT INGREDIENT ANALYSIS</span><h1>اعرف ماذا يوجد<br><strong>داخل منتجك.</strong></h1><p>ارفع صورة واضحة لقائمة المكونات، ودع HalalLens يحوّلها إلى تحليل بصري سريع ومفهوم.</p><div class="hero-features"><span>تحليل المكونات</span><span>كشف الإضافات</span><span>درجة ثقة</span></div></div>
-      <div class="hero-orb" aria-hidden="true"><div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="orb-eye"><span class="eye-shine"></span></div><div class="orb-pulse"></div></div>
-    </section>
-
-    <section class="workspace">
+    <section class="hero"><div class="hero-copy"><span class="eyebrow">INTELLIGENT INGREDIENT ANALYSIS</span><h1>اعرف ماذا يوجد<br><strong>داخل منتجك.</strong></h1><p>ارفع صورة واضحة لقائمة المكونات، ودع HalalLens يحوّلها إلى تحليل بصري سريع ومفهوم.</p><div class="hero-features"><span>تحليل المكونات</span><span>كشف الإضافات</span><span>درجة ثقة</span></div></div><div class="hero-orb" aria-hidden="true"><div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="orb-eye"><span class="eye-shine"></span></div><div class="orb-pulse"></div></div></section>
+    <section class="workspace" aria-label="محلل HalalLens">
       <div class="scanner glass">
         <div class="scanner-top"><div><span class="eyebrow">01 / SCAN</span><h2>حلّل منتجًا</h2></div><span class="live-chip"><i></i> READY</span></div>
         <div class="scan-stage" id="dropZone">
-          <input id="fileInput" type="file" accept="image/*" hidden />
+          <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" hidden />
           <div class="scan-grid"></div><div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
-          <div class="scan-empty" id="emptyState"><div class="upload-icon"><span></span><b>+</b></div><h3>ارفع صورة المنتج</h3><p>التقط صورة واضحة للمكونات أو اسحبها هنا</p><div class="upload-actions"><button class="primary" id="uploadBtn">اختيار صورة</button><button class="secondary" id="demoBtn">تجربة تجريبية</button></div><small>PNG / JPG / WEBP · حتى 10MB</small></div>
-          <img id="previewImage" class="preview" alt="معاينة المنتج" />
-          <div class="scan-overlay" id="scanOverlay"><div class="scan-line"></div><div class="scan-caption">جارٍ تحليل النص والصورة...</div></div><button class="remove-preview" id="removeBtn">×</button>
+          <div class="scan-empty" id="emptyState"><div class="upload-icon"><span></span><b>+</b></div><h3>ارفع صورة المنتج</h3><p>التقط صورة واضحة للمكونات أو اسحبها هنا</p><div class="upload-actions"><button class="primary" id="uploadBtn" type="button">اختيار صورة</button><button class="secondary" id="demoBtn" type="button">تجربة تجريبية</button></div><small>PNG / JPG / WEBP · حتى 10MB</small></div>
+          <img id="previewImage" class="preview" alt="معاينة المنتج المرفوع" />
+          <div class="scan-overlay" id="scanOverlay" aria-live="polite"><div class="scan-line"></div><div class="scan-caption">جارٍ تحليل النص والصورة...</div></div><button class="remove-preview" id="removeBtn" type="button" aria-label="إزالة الصورة">×</button>
         </div>
-        <div class="scanner-footer"><span><i class="shield"></i> لا يتم حفظ الصورة محليًا</span><button class="analyze-btn" id="analyzeBtn" disabled>ابدأ التحليل <span>↗</span></button></div>
+        <div class="scanner-footer"><span><i class="shield"></i> الصورة لا تُرفع إلى خادم عبر هذه النسخة</span><button class="analyze-btn" id="analyzeBtn" type="button" disabled>ابدأ التحليل <span>↗</span></button></div>
       </div>
-
-      <aside class="results glass" id="resultsPanel">
+      <aside class="results glass" id="resultsPanel" aria-live="polite">
         <div class="results-head"><div><span class="eyebrow">02 / AI RESULT</span><h2>نتيجة التحليل</h2></div><span class="result-id">HL-2048</span></div>
         <div class="verdict-card pending" id="verdictCard"><div class="verdict-icon" id="verdictIcon">◌</div><div><small id="verdictKicker">بانتظار الصورة</small><h3 id="verdictTitle">جاهز للتحليل</h3><p id="verdictText">ارفع منتجًا للحصول على تقرير المكونات.</p></div></div>
         <div class="confidence"><div class="confidence-ring" id="confidenceRing"><div><strong id="confidenceValue">0.00</strong><small>ثقة التحليل</small></div></div><div><span class="eyebrow">CONFIDENCE ENGINE</span><h3 id="confidenceTitle">لم يبدأ التحليل</h3><p id="confidenceText">ستظهر درجة الثقة بعد تحليل الصورة.</p></div></div>
         <div class="ingredient-list"><div class="list-title"><span>العناصر المكتشفة</span><span id="ingredientCount">0</span></div><div id="ingredients"><div class="empty-item">لا توجد بيانات بعد</div></div></div>
-        <div class="analysis-note" id="analysisNote"><b>ملاحظة:</b> التحليل المعروض تجريبي ولا يغني عن الرجوع إلى الجهة الموثوقة عند الشك في مكوّن.</div>
+        <div class="analysis-note" id="analysisNote"><b>ملاحظة:</b> ستظهر تفاصيل التحليل بعد رفع صورة وتشغيل الفحص.</div>
       </aside>
     </section>
-
-    <section class="bottom-grid"><div class="mini-panel glass"><span class="eyebrow">HEURISTIC ENGINE</span><h3>كيف نصل إلى النتيجة؟</h3><div class="steps"><span><b>01</b> OCR</span><span><b>02</b> Ingredient map</span><span><b>03</b> Risk scoring</span><span><b>04</b> Verdict</span></div></div><div class="mini-panel glass tips"><span class="eyebrow">BEST PRACTICE</span><h3>صورة أوضح = تحليل أدق</h3><p>اجعل النص ظاهرًا بالكامل، وتجنب الانعكاس والضبابية والقص.</p></div></section>
+    <section class="bottom-grid"><div class="mini-panel glass"><span class="eyebrow">HEURISTIC ENGINE</span><h3>كيف نصل إلى النتيجة؟</h3><div class="steps"><span><b>01</b> OCR</span><span><b>02</b> Ingredient map</span><span><b>03</b> Risk scoring</span><span><b>04</b> Verdict</span></div></div><div class="mini-panel glass tips"><span class="eyebrow">BEST PRACTICE</span><h3>صورة أوضح = تحليل أدق</h3><p>اجعل النص ظاهرًا بالكامل، وتجنب الانعكاس والضبابية والقص. النسخة الحالية محاكاة للواجهة ولا تتصل بمحرّك OCR خارجي.</p></div></section>
     <footer>HalalLens © 2026 · Intelligent Food Analysis Interface</footer>
-  </main><div class="toast" id="toast"></div><script src="app.js"></script>
+  </main><div class="toast" id="toast" role="status" aria-live="polite"></div><script src="app.js"></script>
 </body>
 </html>
