@@ -39,6 +39,15 @@
     </section>
     <section class="bottom-grid"><div class="mini-panel glass"><span class="eyebrow">HEURISTIC ENGINE</span><h3>كيف نصل إلى النتيجة؟</h3><div class="steps"><span><b>01</b> OCR</span><span><b>02</b> Ingredient map</span><span><b>03</b> Risk scoring</span><span><b>04</b> Verdict</span></div></div><div class="mini-panel glass tips"><span class="eyebrow">BEST PRACTICE</span><h3>صورة أوضح = تحليل أدق</h3><p>اجعل النص ظاهرًا بالكامل، وتجنب الانعكاس والضبابية والقص. النسخة الحالية محاكاة للواجهة ولا تتصل بمحرّك OCR خارجي.</p></div></section>
     <footer>HalalLens © 2026 · Intelligent Food Analysis Interface</footer>
-  </main><div class="toast" id="toast" role="status" aria-live="polite"></div><script src="app.js"></script>
+  </main>
+
+  <dialog class="history-dialog" id="historyDialog" aria-labelledby="historyTitle">
+    <div class="dialog-shell glass">
+      <div class="dialog-head"><div><span class="eyebrow">LOCAL MEMORY</span><h2 id="historyTitle">سجل التحليلات</h2></div><button class="dialog-close" id="historyClose" type="button" aria-label="إغلاق">×</button></div>
+      <div class="history-body" id="historyBody"></div>
+      <div class="dialog-foot"><span>يُخزّن السجل محليًا في المتصفح فقط.</span><button class="secondary" id="clearHistoryBtn" type="button">مسح السجل</button></div>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div><script src="app.js"></script>
 </body>
 </html>
